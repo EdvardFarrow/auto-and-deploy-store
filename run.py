@@ -16,6 +16,8 @@ directory = config.get('Paths', 'directory')
 # Преобразуем регулярное выражение в объект регулярного выражения
 sales_path_regex = re.compile(sales_path_pattern)
 
+sales_df = pd.DataFrame()
+
 # Обработка файлов в директории
 for filename in os.listdir(directory):
     # Если файл соответствует регулярному выражению

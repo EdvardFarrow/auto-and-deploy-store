@@ -21,16 +21,10 @@ for filename in os.listdir(directory):
     # Если файл соответствует регулярному выражению
     if sales_path_regex.match(filename):
         file_path = os.path.join(directory, filename)
-        
-        # Проверяем, существует ли такой файл
-        if os.path.exists(file_path):
-            # Читаем CSV в DataFrame
-            sales_df = pd.read_csv(file_path)
-            print(f"Файл: {filename}")
-            print(sales_df)
-        else:
-            print(f"Файл {filename} не найден")
-
+        print(f"Файл path: {file_path}")
+        # Читаем CSV в DataFrame
+        sales_df.append(pd.read_csv(file_path))
+        print(f"Файл: {filename}")
 
 database = PGDatabase(
     host=config.get('Database', 'host'),
@@ -39,8 +33,9 @@ database = PGDatabase(
     password=config.get('Database', 'password')
 )
 
-
-for i, row in sales_df.iterrows():
-    query = f"INSERT INTO sales values ('{row['doc_id']}', '{row['category']}', '{row['item']}', {row['amount']}, {row['price']}, {row['discount']}, {row['total']})"
-    print(query)
-    database.post(query)
+for f in sales_df:
+    print(f"{f.iterrows()}")
+    for i, row in f.iterrows():
+        query = f"INSERT INTO sales values ('{row['doc_id']}', '{row['category']}', '{row['item']}', {row['amount']}, {row['price']}, {row['discount']}, {row['total']})"
+        print(query)
+        database.post(query)
